@@ -8,7 +8,7 @@ import { ProductCategory } from '../common/product-category';
     providedIn: 'root'
 })
 export class ProductService {
-
+    
     private productBaseUrl = 'http://localhost:8080/api/products';
     private productCategoriesBaseUrl = 'http://localhost:8080/api/product-categories';
 
@@ -42,6 +42,11 @@ export class ProductService {
         return this.httpClient.get<GetResponseProduct>(searchProductByKeywordUrl).pipe(
             map(response => response._embedded.products)
         );
+    }
+
+    getProduct(productId: number): Observable<Product> {
+        const productUrl = `${this.productBaseUrl}/${productId}`;
+        return this.httpClient.get<Product>(productUrl);
     }
 
 }
