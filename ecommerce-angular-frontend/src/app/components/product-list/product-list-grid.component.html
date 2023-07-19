@@ -4,40 +4,36 @@
             <div class="row">
                 <div class="col-md-3" *ngFor="let tempProduct of products">
                     <div class="product-box">
-                        <a href="/products/{{ tempProduct.id }}">
+                        <a routerLink="/products/{{ tempProduct.id }}">
                             <img src="{{ tempProduct.imageUrl }}" class="img-responsive">
                         </a>
-                        <a href="/products/{{ tempProduct.id }}">
-                            <h1>{{ tempProduct.name }}</h1>
-                        </a>
+                        <div>
+                            <a routerLink="/products/{{ tempProduct.id }}">
+                                <h1>{{ tempProduct.name }}</h1>
+                            </a>
+                        </div>
                         <div class="price">{{ tempProduct.unitPrice | currency: 'INR' }}</div>
-                        <a href="#" class="primary-btn">Add to cart</a>
+                        <button class="btn btn-primary btn-sm" (click)="addToCart(tempProduct)">Add to cart</button>
                     </div>
                 </div>
                 <div *ngIf="products?.length == 0" class="alert alert-info col-md-12" role="alert">
                     No products found.
                 </div>
             </div>
-            <div class="footer-pagination">
+            <div class="footer-pagination" *ngIf="totalPages > 1">
                 <div class="row">
                     <div class="col-md-6"></div>
-                    <div class="col-md-3">
-                        <div class="items">
-                            <label>Item per page</label> <select>
-                                <option>10</option>
-                                <option>20</option>
-                                <option>30</option>
-                                <option>40</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="number">1 - 10 of 100</div>
-                    </div>
-                    <div class="col-md-1">
-                        <div class="arrows">
-                            <a href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
-                            <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ngb-pagination class="d-flex justify-content-end" 
+                                        [maxSize]="3"
+                                        [(page)]="currentPage"
+                                        [pageSize]="currentPageSize"
+                                        [collectionSize]="totalElements"
+                                        (pageChange)="listProducts();">
+                                </ngb-pagination>
+                            </div>
                         </div>
                     </div>
                 </div>
