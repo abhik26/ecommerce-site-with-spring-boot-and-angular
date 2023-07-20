@@ -1,0 +1,56 @@
+<div class="main-content">
+    <div class="section-content section-content-p30">
+        <div class="container-fluid">
+            <div *ngIf="cartItems.length > 0; else emptyCartDiv">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="30%">Product Image</th>
+                            <th width="50%">Product Detail</th>
+                            <th width="20%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of cartItems">
+                            <td>
+                                <img class="img-responsive" width="150px" src="{{item.imageUrl}}" />
+                            </td>
+                            <td>
+                                <p>Product Name: {{item.name}}</p>
+                                <p>Unit Price: {{item.unitPrice | currency: 'INR'}}</p>
+                            </td>
+                            <td>
+                                <div class="items">
+                                    <label class="label label-default">Quantity:</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button class="btn btn-primary btn-sm" (click)="decrementQuantity(item)"><i class="fas fa-minus"></i></button>
+                                        </div>
+                                        <div class="col"><label>{{item.quantity}}</label></div>
+                                        <div class="col">
+                                            <button class="btn btn-primary btn-sm" (click)="incrementQuantity(item)"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm mt-2" (click)="removeItem(item)">Remove</button>
+                                </div>
+                                <div class="items">
+                                    <label>Subtotal:</label> {{item.quantity * item.unitPrice | currency: 'INR'}}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td>
+                                <div>Total Items: {{ totalItemInCart }}</div>
+                                <div>Total Price: {{ totalPriceOfCart | currency: 'INR'}}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-template #emptyCartDiv>
+                <div class="col-md-12 alert alert-warning" role="alert">Cart is empty!</div>
+            </ng-template>
+        </div>
+    </div>
+</div>
