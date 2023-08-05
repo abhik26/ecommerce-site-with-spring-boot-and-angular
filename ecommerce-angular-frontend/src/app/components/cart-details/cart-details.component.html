@@ -42,7 +42,8 @@
                             <td colspan="2"></td>
                             <td>
                                 <div>Total Items: {{ totalItemInCart }}</div>
-                                <div>Total Price: {{ totalPriceOfCart | currency: 'INR'}}</div>
+                                <div>Total Price: {{ totalPriceOfCart | currency: 'INR' }}</div>
+                                <div><a class="btn btn-primary btn-sm" routerLink="/checkout">Checkout</a></div>
                             </td>
                         </tr>
                     </tbody>
