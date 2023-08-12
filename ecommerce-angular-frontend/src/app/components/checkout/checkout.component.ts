@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Country } from 'src/app/common/country';
+import { Order } from 'src/app/common/order';
+import { OrderItem } from 'src/app/common/order-item';
+import { Purchase } from 'src/app/common/purchase';
 import { State } from 'src/app/common/state';
 import { CartService } from 'src/app/services/cart.service';
 import { CheckoutFormService } from 'src/app/services/checkout-form.service';
@@ -24,7 +28,7 @@ export class CheckoutComponent implements OnInit {
     billingAddressStates: State[] = [];
 
     constructor(private formBuilder: FormBuilder, private checkoutFromService: CheckoutFormService,
-            private cartService: CartService) { }
+            private cartService: CartService, private router: Router) { }
 
     ngOnInit(): void {
         this.cartService.totalItemInCart.subscribe(data => this.totalItemInCart = data);
@@ -112,11 +116,51 @@ export class CheckoutComponent implements OnInit {
     }
 
     purchaseProducts() {
+        if (!this.totalItemInCart || this.totalItemInCart < 0) {
+            alert(`No item in cart`);
+            this.router.navigateByUrl('/products');
+        }
+
         if (this.checkoutFormGroup.invalid) {
             this.checkoutFormGroup.markAllAsTouched();
+            return;
         } else {
             console.log(this.checkoutFormGroup.value);
         }
+
+        const cartItems = this.cartService.cartItems;
+        let order = new Order();
+        order.totalItem = this.totalItemInCart;
+        order.totalPrice = this.totalPriceOfCart;
+
+        let orderItems: OrderItem[] = cartItems.map(item => new OrderItem(item));
+        
+        let purchase: Purchase = new Purchase();
+        purchase.customer = this.checkoutFormGroup.get('customer').value;
+
+        purchase.shippingAddress = this.checkoutFormGroup.get('shippingAddress').value;
+        purchase.shippingAddress.country = JSON.parse(JSON.stringify(purchase.shippingAddress.country)).name;
+        purchase.shippingAddress.state = JSON.parse(JSON.stringify(purchase.shippingAddress.state)).name;
+
+        purchase.billingAddress = this.checkoutFormGroup.get('billingAddress').value;
+        purchase.billingAddress.country = JSON.parse(JSON.stringify(purchase.billingAddress.country)).name;
+        purchase.billingAddress.state = JSON.parse(JSON.stringify(purchase.billingAddress.state)).name;
+
+        purchase.order = order;
+        purchase.orderItems = orderItems;
+
+        console.log(purchase);
+        // return;
+
+        this.checkoutFromService.placeOrder(purchase).subscribe({
+            next: response => {
+                alert(`You order has been received with the tracking number: ${response.orderTrackingNumber}`);
+                this.resetCart();
+            },
+            error: response => {
+                alert(`An error occurred: ${response.message}`);
+            }
+        })
     }
 
     handleCreditCardExpiryYearChange() {
@@ -153,6 +197,13 @@ export class CheckoutComponent implements OnInit {
         } else {
             return null;
         }
+    }
+
+    resetCart() {
+        this.cartService.resetCart();
+        this.checkoutFormGroup.reset();
+
+        this.router.navigateByUrl('/products');
     }
 
 }

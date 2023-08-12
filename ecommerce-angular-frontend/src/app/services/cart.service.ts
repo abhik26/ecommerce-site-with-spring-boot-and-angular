@@ -67,4 +67,10 @@ export class CartService {
             }
         }
     }
+
+    resetCart() {
+        this.cartItems = [];
+        this.totalItemInCart.next(0);
+        this.totalPriceOfCart.next(0);
+    }
 }

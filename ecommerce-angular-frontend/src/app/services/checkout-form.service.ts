@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 import { Country } from '../common/country';
 import { State } from '../common/state';
+import { Purchase } from '../common/purchase';
 
 @Injectable({
     providedIn: 'root'
@@ -11,6 +12,7 @@ export class CheckoutFormService {
 
     private readonly countriesUrl: string = 'http://localhost:8080/api/countries';
     private readonly statesUrl: string = 'http://localhost:8080/api/states';
+    private readonly purchaseUrl: string = 'http://localhost:8080/api/checkout/purchase';
 
     constructor(private httpClient: HttpClient) { }
 
@@ -47,6 +49,10 @@ export class CheckoutFormService {
         }
 
         return of(years);
+    }
+
+    placeOrder(purchase: Purchase): Observable<any> {
+        return this.httpClient.post(this.purchaseUrl, purchase);
     }
 }
 
