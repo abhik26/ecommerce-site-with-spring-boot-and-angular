@@ -1,10 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, Routes } from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { OKTA_CONFIG, OktaAuthModule, OktaCallbackComponent } from '@okta/okta-angular';
+import { OKTA_CONFIG, OktaAuthGuard, OktaAuthModule, OktaCallbackComponent } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { AppComponent } from './app.component';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
@@ -17,13 +17,24 @@ import { ProductDetailsComponent } from './components/product-details/product-de
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { SearchComponent } from './components/search/search.component';
 import appConfig from './config/app-config';
+import { MembersPageComponent } from './components/members-page/members-page.component';
 
 const oktaConfig = appConfig.oidc;
 const oktaAuth = new OktaAuth(oktaConfig);
 
+function sendToLoginPage(oktaAuth: OktaAuth, injector: Injector) {
+    // Use injector to access any service available within the application
+    const router = injector.get(Router);
+    router.navigate(['/login']);
+}
+
 const routes: Routes = [
     {path: 'login/callback', component: OktaCallbackComponent},
     {path: 'login', component: LoginComponent},
+
+    {path: 'members', component: MembersPageComponent, canActivate: [OktaAuthGuard],
+        data: {onAuthRequired: sendToLoginPage } },
+
     {path: 'category/:id', component: ProductListComponent},
     {path: 'category', component: ProductListComponent},
     {path: 'products/:id', component: ProductDetailsComponent},
@@ -46,7 +57,8 @@ const routes: Routes = [
     CartDetailsComponent,
     CheckoutComponent,
     LoginComponent,
-    LoginStatusComponent
+    LoginStatusComponent,
+    MembersPageComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
