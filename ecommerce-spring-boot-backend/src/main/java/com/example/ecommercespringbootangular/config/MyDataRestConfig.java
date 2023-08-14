@@ -32,7 +32,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 	@Override
 	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
 		
-		HttpMethod[] unsupportedHttpMethods = {HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE};
+		HttpMethod[] unsupportedHttpMethods = {HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.PATCH};
 		
 		disableHttpMethods(Product.class, config, unsupportedHttpMethods);
 		disableHttpMethods(ProductCategory.class, config, unsupportedHttpMethods);
@@ -40,6 +40,8 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 		disableHttpMethods(State.class, config, unsupportedHttpMethods);
 		
 		exposeIds(config);
+		
+		cors.addMapping(config.getBasePath() + "/**").allowedOriginPatterns("http://localhost:*");
 		
 	}
 
