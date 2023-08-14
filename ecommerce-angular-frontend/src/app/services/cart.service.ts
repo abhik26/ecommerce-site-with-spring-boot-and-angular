@@ -11,7 +11,20 @@ export class CartService {
     totalItemInCart: Subject<number> = new BehaviorSubject<number>(0);
     totalPriceOfCart: Subject<number> = new BehaviorSubject<number>(0);
 
-    constructor() { }
+    // private webStorage: Storage = sessionStorage;
+    private webStorage: Storage = localStorage;
+
+    private readonly cartItemsStorageKey: string = 'cartItems';
+
+    constructor() {
+        // read data from web storage
+        let data = JSON.parse(this.webStorage.getItem(this.cartItemsStorageKey));
+
+        if (data) {
+            this.cartItems = data;
+            this.computeCartTotals();
+        }
+    }
 
     addToCart(cartItemToAdd: CartItem) {
         let alreadyExistsInCart: boolean = false;
@@ -43,6 +56,8 @@ export class CartService {
 
         this.totalPriceOfCart.next(tempTotalPrice);
         this.totalItemInCart.next(tempTotalItem);
+
+        this.persistCartItems();
     }
 
     decrementQuantity(item: CartItem) {
@@ -72,5 +87,9 @@ export class CartService {
         this.cartItems = [];
         this.totalItemInCart.next(0);
         this.totalPriceOfCart.next(0);
+    }
+
+    persistCartItems() {
+        this.webStorage.setItem(this.cartItemsStorageKey, JSON.stringify(this.cartItems));
     }
 }
