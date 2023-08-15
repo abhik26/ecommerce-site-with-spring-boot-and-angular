@@ -27,6 +27,11 @@ export class CheckoutComponent implements OnInit {
     shippingAddressStates: State[] = [];
     billingAddressStates: State[] = [];
 
+    webStorage: Storage = sessionStorage;
+    private readonly userFullNameStorageKey = 'userFullName';
+    private readonly userEmailStorageKey = 'userEmail';
+
+
     constructor(private formBuilder: FormBuilder, private checkoutFromService: CheckoutFormService,
             private cartService: CartService, private router: Router) { }
 
@@ -34,11 +39,28 @@ export class CheckoutComponent implements OnInit {
         this.cartService.totalItemInCart.subscribe(data => this.totalItemInCart = data);
         this.cartService.totalPriceOfCart.subscribe(data => this.totalPriceOfCart = data);
 
+        let userFirstName = '';
+        let userLastName = '';
+        let userEmail = '';
+
+        let tempUserFullName = JSON.parse(this.webStorage.getItem(this.userFullNameStorageKey));
+        let tempUserEmail = JSON.parse(this.webStorage.getItem(this.userEmailStorageKey));
+
+        if (tempUserFullName) {
+            let userNames: string[] = tempUserFullName.split(' ', 2);
+            userFirstName = userNames[0];
+            userLastName = userNames[1];
+        }
+
+        if (tempUserEmail) {
+            userEmail = tempUserEmail;
+        }
+
         this.checkoutFormGroup = this.formBuilder.group({
             customer: this.formBuilder.group({
-                firstName: new FormControl('', [Validators.required, Validators.minLength(2), CheckoutComponent.notOnlyWhiteSpace]),
-                lastName: new FormControl('', [Validators.required, Validators.minLength(2), CheckoutComponent.notOnlyWhiteSpace]),
-                email: new FormControl('', [Validators.required, Validators.email])
+                firstName: new FormControl(userFirstName, [Validators.required, Validators.minLength(2), CheckoutComponent.notOnlyWhiteSpace]),
+                lastName: new FormControl(userLastName, [Validators.required, Validators.minLength(2), CheckoutComponent.notOnlyWhiteSpace]),
+                email: new FormControl(userEmail, [Validators.required, Validators.email])
             }),
             shippingAddress: this.formBuilder.group({
                 street: new FormControl('', [Validators.required, Validators.minLength(2), CheckoutComponent.notOnlyWhiteSpace]),

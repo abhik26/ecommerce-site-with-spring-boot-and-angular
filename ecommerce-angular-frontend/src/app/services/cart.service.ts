@@ -11,8 +11,8 @@ export class CartService {
     totalItemInCart: Subject<number> = new BehaviorSubject<number>(0);
     totalPriceOfCart: Subject<number> = new BehaviorSubject<number>(0);
 
-    // private webStorage: Storage = sessionStorage;
-    private webStorage: Storage = localStorage;
+    private webStorage: Storage = sessionStorage;
+    // private webStorage: Storage = localStorage;
 
     private readonly cartItemsStorageKey: string = 'cartItems';
 

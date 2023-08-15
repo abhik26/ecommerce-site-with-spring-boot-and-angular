@@ -70,5 +70,13 @@ public class Address {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
 	
 }

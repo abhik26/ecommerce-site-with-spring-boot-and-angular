@@ -58,18 +58,23 @@ public class CheckoutServiceImpl implements CheckoutService {
 		
 		Customer customer = purchase.getCustomer();
 		
-		String customerEmail = customer.getEmail();
-		
-		if (customerEmail != null) {
-			List<Customer> existingCustomers = customerRepository.findByEmailIgnoreCase(customerEmail.toUpperCase());
+		if (customer != null) {
+			String customerEmail = customer.getEmail();
 			
-			if (existingCustomers != null && existingCustomers.size() > 0) {
-				Customer tempCustomer = existingCustomers.get(0);
+			if (customerEmail != null && !customerEmail.trim().isEmpty()) {
+				customerEmail = customerEmail.toLowerCase();
+				customer.setEmail(customerEmail);
 				
-				tempCustomer.setFirstName(customer.getFirstName());
-				tempCustomer.setLastName(customer.getLastName());
+				List<Customer> existingCustomers = customerRepository.findByEmailIgnoreCase(customerEmail);
 				
-				customer = tempCustomer;
+				if (existingCustomers != null && existingCustomers.size() > 0) {
+					Customer tempCustomer = existingCustomers.get(0);
+					
+					tempCustomer.setFirstName(customer.getFirstName());
+					tempCustomer.setLastName(customer.getLastName());
+					
+					customer = tempCustomer;
+				}
 			}
 		}
 		
