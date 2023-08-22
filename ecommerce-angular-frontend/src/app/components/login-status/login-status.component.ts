@@ -36,7 +36,6 @@ export class LoginStatusComponent implements OnInit {
                     this.userEmail = result.email;
                     this.webStorage.setItem(this.userFullNameStorageKey, JSON.stringify(this.userFullName));
                     this.webStorage.setItem(this.userEmailStorageKey, JSON.stringify(this.userEmail));
-                    console.log("inside isAuthenticated");
                 }
             )
         } else {

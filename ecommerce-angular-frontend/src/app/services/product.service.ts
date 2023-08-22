@@ -44,7 +44,7 @@ export class ProductService {
     searchProductsByKeyword(searchKeyword: string): Observable<Product[]> {
 
         const searchProductByKeywordUrl = this.productBaseUrl + `/search/findByNameContainingIgnoreCase?name=${searchKeyword}`;
-        console.log(searchProductByKeywordUrl);
+        
         return this.httpClient.get<GetResponseProduct>(searchProductByKeywordUrl).pipe(
             map(response => response._embedded.products)
         );
