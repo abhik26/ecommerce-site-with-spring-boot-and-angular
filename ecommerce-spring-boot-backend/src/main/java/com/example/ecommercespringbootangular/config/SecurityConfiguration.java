@@ -28,6 +28,10 @@ public class SecurityConfiguration {
 		// add non-empty response body for 401
 		Okta.configureResourceServer401ResponseBody(httpSecurity);
 		
+		// disable CSRF since we are not using cookies for session tracking.
+		// It is giving forbidden error for purchase post request.
+		httpSecurity.csrf().disable();
+		
 		return httpSecurity.build();
 	}
 }

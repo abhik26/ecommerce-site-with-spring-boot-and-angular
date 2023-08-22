@@ -38,8 +38,6 @@ export class LoginStatusComponent implements OnInit {
                     this.webStorage.setItem(this.userEmailStorageKey, JSON.stringify(this.userEmail));
                 }
             )
-        } else {
-            this.webStorage.clear();
         }
     }
 
